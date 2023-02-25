@@ -1,0 +1,3 @@
+# PageCollection
+
+Some Single Page
