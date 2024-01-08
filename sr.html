@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Speech</title>
+  <style>* {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+  }
+
+  #container {
+      padding: 16px;
+  }
+
+  #result {
+      margin-top: 16px;
+      border: 1px solid gold;
+      background: lightyellow;
+      padding: 16px;
+  }
+
+  #btn {
+      padding: 8px;
+  }
+  </style>
+</head>
+<body>
+<div id="container">
+  <button id="btn">开始识别</button>
+  <pre id="result"></pre>
+</div>
+
+<script>
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const btn = document.getElementById("btn");
+  const result = document.getElementById("result");
+  if (SpeechRecognition) {
+    let recognition, listening;
+    recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "zh-cn";
+    recognition.onresult = (event) => {
+      const last = event.results.length - 1;
+      const res = event.results[last];
+      result.innerText = res[0].transcript;
+      if (res.isFinal) {
+        stop();
+      }
+    };
+    const start = () => {
+      if (listening) return false;
+      listening = true;
+      btn.innerText = "识别中(点击停止)";
+      try {
+        recognition.start();
+      } catch (err) {
+        return false;
+      }
+    };
+    const stop = () => {
+      recognition.stop();
+      listening = false;
+      btn.innerText = "开始识别";
+    };
+    btn.addEventListener("click", () => {
+      if (listening) {
+        stop();
+      } else {
+        start();
+      }
+    });
+  }
+</script>
+</body>
+</html>
